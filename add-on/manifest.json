@@ -1,0 +1,40 @@
+{
+    "manifest_version": 2,
+    "name": "Auto Open Privately",
+    "version": "1.0",
+
+    "description": "Always opens certain websites (configurable list of websites) in a private window. Needs the permission to run in private windows.",
+
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+},
+
+
+    "options_ui": {
+        "page": "options.html"
+    },
+
+    "applications": {
+        "gecko": {
+            "id": "openprivately@fbausch.de"
+        }
+    },
+
+    "permissions": [
+        "webNavigation",
+        "tabs",
+        "activeTab",
+        "<all_urls>",
+        "storage"
+    ],
+
+    "browser_action": {
+        "default_icon": "thumb.png"
+    },
+
+    "icons": {
+        "96": "thumb.png"
+    }
+}
