@@ -15,7 +15,7 @@ function onError(error) {
 function loadPrivately(privatelist, url, tab) {
     if (!tab.incognito) {
         for (i = 0; i < privatelist.length; i++) {
-            var domain = privatelist[i].strip();
+            var domain = privatelist[i].replace(/^\s+|\s+$/g, '');
             if (domain.startsWith('#')) {
                 continue;
             } else if (domain.startsWith('!')) {
