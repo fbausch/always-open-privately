@@ -4,6 +4,7 @@ function openURLInPrivateWindow(evtx, privatelist) {
     if (url.startsWith("about:") || url.startsWith("chrome:")) {
         return;
     }
+    url = url.replace(/utm_campaign=[^&]*/gi, "");
     var gettingCurrent = browser.windows.getCurrent();
     gettingCurrent.then(loadPrivately.bind(null, privatelist, url), onError);
 }
@@ -20,16 +21,15 @@ function loadPrivately(privatelist, url, tab) {
                 continue;
             } else if (domain.startsWith('!')) {
                 domain = domain.substring(1);
-                var regex = 'http(s)?:\\/\\/'+domain+'\\/';
+                var regex = '(http(s)?)|(ftp):\\/\\/'+domain+'\\/';
             } else if (domain.startsWith('.')) {
                 domain = domain.substring(1);
-                var regex = 'http(s)?:\\/\\/([\\da-z-]+\\.)+'+domain+'\\/';
+                var regex = '(http(s)?)|(ftp):\\/\\/([\\da-z-]+\\.)+'+domain+'\\/';
             } else {
-                var regex = 'http(s)?:\\/\\/([\\da-z-]+\\.)*'+domain+'\\/';
+                var regex = '(http(s)?)|(ftp):\\/\\/([\\da-z-]+\\.)*'+domain+'\\/';
             }
             regex = new RegExp(regex, "i");
             var pos = url.search(regex);
-            console.log("found at " + pos);
             if (pos == 0) {
                 browser.tabs.executeScript(tab.tabId, { runAt: "document_start", code: 'window.stop(); '});
                 browser.windows.create({ url, incognito: true });

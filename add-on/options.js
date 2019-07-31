@@ -1,7 +1,6 @@
 function saveOptions(e) {
     e.preventDefault();
     var plist = document.querySelector("#privatelist").value
-    console.log(plist);
     browser.storage.sync.set({
         privatelist: plist
     });
