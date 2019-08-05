@@ -30,10 +30,6 @@
         "storage"
     ],
 
-    "browser_action": {
-        "default_icon": "thumb.png"
-    },
-
     "icons": {
         "96": "thumb.png"
     }
