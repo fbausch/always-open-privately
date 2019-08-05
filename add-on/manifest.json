@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
-    "name": "Auto Open Privately",
-    "version": "1.0",
+    "name": "Always Open Privately",
+    "version": "1.1",
 
     "description": "Always opens certain websites (configurable list of websites) in a private window. Needs the permission to run in private windows.",
 

@@ -1,4 +1,4 @@
-function openURLInPrivateWindow(evtx, privatelist) {
+function openURLInPrivateWindow(evtx, privatelist, invert) {
     privatelist = privatelist.split(/\r?\n/);
     var url = evtx.url;
     if (url.startsWith("about:") || url.startsWith("chrome:")) {
@@ -6,14 +6,14 @@ function openURLInPrivateWindow(evtx, privatelist) {
     }
     url = url.replace(/utm_campaign=[^&]*/gi, "");
     var gettingCurrent = browser.windows.getCurrent();
-    gettingCurrent.then(loadPrivately.bind(null, privatelist, url), onError);
+    gettingCurrent.then(loadPrivately.bind(null, privatelist, invert, url), onError);
 }
 
 function onError(error) {
   console.log(`Error: ${error}`);
 }
 
-function loadPrivately(privatelist, url, tab) {
+function loadPrivately(privatelist, invert, url, tab) {
     if (!tab.incognito) {
         for (i = 0; i < privatelist.length; i++) {
             var domain = privatelist[i].replace(/^\s+|\s+$/g, '');
@@ -21,20 +21,26 @@ function loadPrivately(privatelist, url, tab) {
                 continue;
             } else if (domain.startsWith('!')) {
                 domain = domain.substring(1);
-                var regex = '(http(s)?)|(ftp):\\/\\/'+domain+'\\/';
+                var regex = '((http(s)?)|(ftp)):\\/\\/'+domain+'\\/';
             } else if (domain.startsWith('.')) {
                 domain = domain.substring(1);
-                var regex = '(http(s)?)|(ftp):\\/\\/([\\da-z-]+\\.)+'+domain+'\\/';
+                var regex = '((http(s)?)|(ftp)):\\/\\/([\\da-z-]+\\.)+'+domain+'\\/';
             } else {
-                var regex = '(http(s)?)|(ftp):\\/\\/([\\da-z-]+\\.)*'+domain+'\\/';
+                var regex = '((http(s)?)|(ftp)):\\/\\/([\\da-z-]+\\.)*'+domain+'\\/';
             }
             regex = new RegExp(regex, "i");
             var pos = url.search(regex);
-            if (pos == 0) {
+            if (pos == 0 && !invert) {
                 browser.tabs.executeScript(tab.tabId, { runAt: "document_start", code: 'window.stop(); '});
                 browser.windows.create({ url, incognito: true });
-                break;
+                return;
+            } else if (pos == 0) {
+                return;
             }
+        }
+        if (invert) {
+            browser.tabs.executeScript(tab.tabId, { runAt: "document_start", code: 'window.stop(); '});
+            browser.windows.create({ url, incognito: true });
         }
     }
 }
@@ -44,7 +50,7 @@ browser.webNavigation.onBeforeNavigate.addListener(
 );
 
 function readSettings(evtx) {
-    var getting = browser.storage.sync.get("privatelist");
+    var getting = browser.storage.sync.get(["privatelist", "invert"]);
     getting.then(onStorageGot.bind(null, evtx), onStorageError);
 }
 
@@ -54,9 +60,13 @@ function onStorageError(error) {
 
 function onStorageGot(evtx, item) {
     var privatelist = "";
+    var invert = false;
     if (item.privatelist) {
         privatelist = item.privatelist;
     }
-    openURLInPrivateWindow(evtx, privatelist);
+    if (item.invert) {
+        invert = item.invert;
+    }
+    openURLInPrivateWindow(evtx, privatelist, invert);
 }
 
