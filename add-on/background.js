@@ -4,7 +4,7 @@ function openURLInPrivateWindow(evtx, privatelist, invert) {
     if (url.startsWith("about:") || url.startsWith("chrome:")) {
         return;
     }
-    url = url.replace(/utm_campaign=[^&]*/gi, "");
+    url = url.replace(/(utm_(source|medium|campaign|term|content)|fbclid|gclid|icid|mc_[ce]id|mkt_tok)=[^&#]*/gi, "");
     var gettingCurrent = browser.windows.getCurrent();
     gettingCurrent.then(loadPrivately.bind(null, privatelist, invert, url), onError);
 }
