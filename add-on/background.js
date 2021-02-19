@@ -1,72 +1,92 @@
-function openURLInPrivateWindow(evtx, privatelist, invert) {
-    privatelist = privatelist.split(/\r?\n/);
+function openURLInPrivateWindow(evtx, settings) {
     var url = evtx.url;
-    if (url.startsWith("about:") || url.startsWith("chrome:")) {
+    if (url.startsWith("about:") || url.startsWith("chrome:") || url.startsWith("file:")) {
         return;
     }
-    url = url.replace(/(utm_(source|medium|campaign|term|content)|fbclid|gclid|icid|mc_[ce]id|mkt_tok)=[^&#]*/gi, "");
     var gettingCurrent = browser.windows.getCurrent();
-    gettingCurrent.then(loadPrivately.bind(null, privatelist, invert, url), onError);
+    gettingCurrent.then(loadPrivately.bind(null, settings, url), onError);
 }
 
 function onError(error) {
   console.log(`Error: ${error}`);
 }
 
-function loadPrivately(privatelist, invert, url, tab) {
+function loadPrivately(settings, url, tab) {
     if (!tab.incognito) {
-        for (i = 0; i < privatelist.length; i++) {
-            var domain = privatelist[i].replace(/^\s+|\s+$/g, '');
-            if (domain.startsWith('#')) {
-                continue;
-            } else if (domain.startsWith('!')) {
-                domain = domain.substring(1);
-                var regex = '((http(s)?)|(ftp)):\\/\\/'+domain+'\\/';
-            } else if (domain.startsWith('.')) {
-                domain = domain.substring(1);
-                var regex = '((http(s)?)|(ftp)):\\/\\/([\\da-z-]+\\.)+'+domain+'\\/';
-            } else {
-                var regex = '((http(s)?)|(ftp)):\\/\\/([\\da-z-]+\\.)*'+domain+'\\/';
+        var aurl = document.createElement('a');
+        aurl.href = url;
+        var domain = aurl.hostname.split('.');
+        var i = domain.length - 1;
+        var cdom = domain[i];
+        var matches = false;
+        while (i >= 0) {
+            val = settings["plst"][cdom];
+            if (val !== undefined) {
+                if (val == 1 && i == 0 // domain matched
+                 || val == 2 && i > 0  // subdomain matched
+                 || val == 3) {        // domain or subdomain matched
+                    matches = true;
+                    break;
+                }
             }
-            regex = new RegExp(regex, "i");
-            var pos = url.search(regex);
-            if (pos == 0 && !invert) {
-                browser.tabs.executeScript(tab.tabId, { runAt: "document_start", code: 'window.stop(); '});
-                browser.windows.create({ url, incognito: true });
-                return;
-            } else if (pos == 0) {
-                return;
-            }
+            i--;
+            cdom = domain[i] + "." + cdom;
         }
-        if (invert) {
-            browser.tabs.executeScript(tab.tabId, { runAt: "document_start", code: 'window.stop(); '});
+        if (matches && !settings["invt"] || !matches && settings["invt"]) {
+            url = url.replace(/(utm_(source|medium|campaign|term|content)|fbclid|gclid|icid|mc_[ce]id|mkt_tok)=[^&#]*/gi, "");
             browser.windows.create({ url, incognito: true });
         }
     }
 }
 
-browser.webNavigation.onBeforeNavigate.addListener(
-    readSettings
-);
+function aopListener(evtx) {
+    if (settings == null) {
+        readSettings(evtx);
+    } else {
+        openURLInPrivateWindow(evtx, settings);
+    }
+}
 
 function readSettings(evtx) {
-    var getting = browser.storage.sync.get(["privatelist", "invert"]);
-    getting.then(onStorageGot.bind(null, evtx), onStorageError);
+    browser.storage.sync.get(["privatelist", "invert"]).then(parseSettings.bind(null, evtx), onStorageError);
 }
 
 function onStorageError(error) {
     console.log(`StorageError: ${error}`);
 }
 
-function onStorageGot(evtx, item) {
-    var privatelist = "";
-    var invert = false;
+function parseSettings(evtx, item) {
+    settings = {"plst": {}, "invt": false};
     if (item.privatelist) {
-        privatelist = item.privatelist;
+        var privatelist = item.privatelist.split(/\r?\n/);
+        for (i = 0; i < privatelist.length; i++) {
+            var domain = privatelist[i].replace(/^\s+|\s+$/g, '');
+            if (domain.startsWith('#') || domain.length == 0) {
+                continue;
+            } else if (domain.startsWith('!')) {
+                domain = domain.substring(1);
+                settings["plst"][domain] = 1; // matches only domain
+            } else if (domain.startsWith('.')) {
+                domain = domain.substring(1);  // matches only subdomains
+                settings["plst"][domain] = 2;
+            } else {
+                settings["plst"][domain] = 3; // matches domain and subdomains
+            }
+        }
     }
     if (item.invert) {
-        invert = item.invert;
+        settings["invt"] = item.invert;
     }
-    openURLInPrivateWindow(evtx, privatelist, invert);
+    openURLInPrivateWindow(evtx, settings);
 }
 
+settings = null;
+browser.webNavigation.onBeforeNavigate.addListener(
+    aopListener
+);
+
+browser.runtime.onMessage.addListener((message) => {
+    if (message.type === 'clearCachedSettings') {
+        settings = null;
+    }
+});

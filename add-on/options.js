@@ -1,17 +1,16 @@
 function saveOptions(e) {
     e.preventDefault();
-    var plist = document.querySelector("#privatelist").value;
+    var plst = document.querySelector("#privatelist").value;
     var invrt = document.querySelector("#invert").checked;
     browser.storage.sync.set({
-        privatelist: plist,
+        privatelist: plst,
         invert: invrt
-    });
+    }).then(browser.runtime.sendMessage({type: 'clearCachedSettings'}));
 }
 
 function restoreOptions() {
 
     function setCurrentChoice(result) {
-        console.log(result);
         document.querySelector("#privatelist").value = result.privatelist || "";
         document.querySelector("#invert").checked = result.invert || false;
     }
