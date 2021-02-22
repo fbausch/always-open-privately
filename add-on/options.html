@@ -8,25 +8,47 @@
         font-weight: bold;
         font-size: 1.15em;
       }
-      #privatelist {
-        width: 500px;
-        height: 300px;
-      }
+/* Style inputs, select elements and textareas */
+input[type=text], select, button{
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+/* Style the label to display next to the inputs */
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+/* Style the submit button */
+button[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#entrylist {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
     </style>
   </head>
 
   <body>
 
     <form>
-        <label>List of private pages:<br /><textarea id="privatelist" ></textarea></label>
-        <br />
-        <small>
-            One domain per line.<br />
-            <em>!example.com</em> only matches example.com but no subdomains.<br />
-            <em>example.com</em> matches example.com and all its subdomains.<br />
-            <em>.example.com</em> only matches subdomains of example.com but not example.com.
-        </small>
-        <br />
+        <button type="button" class="addentry">Add new rule</button>
+        <div id="entrylist"></div>
+        <button type="button" class="addentry">Add new rule</button>
+        <hr />
         <label><input type="checkbox" id="invert" /> Invert (open everything in private window that does not match the list)</label>
         <br />
         <button type="submit">Save</button>

@@ -32,9 +32,20 @@ function loadPrivately(settings, url, tab) {
             i--;
             cdom = domain[i] + "." + cdom;
         }
+
         if (matches && !settings["invt"] || !matches && settings["invt"]) {
+            browser.tabs.executeScript(tab.tabId, { runAt: "document_start", code: 'window.stop(); '});
+
             url = url.replace(/(utm_(source|medium|campaign|term|content)|fbclid|gclid|icid|mc_[ce]id|mkt_tok)=[^&#]*/gi, "");
-            browser.windows.create({ url, incognito: true });
+            browser.windows.getAll({windowTypes: ['normal']}).then((wins) => {
+                incognitos = wins.filter(win => win.incognito == true);
+                if (incognitos.length > 0) {
+                    selWin = incognitos[0];
+                    browser.tabs.create({active: true, url: url, windowId: selWin.id}).then(browser.windows.update(selWin.id, {focused: true}));
+                } else {
+                    browser.windows.create({ url, incognito: true });
+                }
+	    });
         }
     }
 }
@@ -48,15 +59,24 @@ function aopListener(evtx) {
 }
 
 function readSettings(evtx) {
-    browser.storage.sync.get(["privatelist", "invert"]).then(parseSettings.bind(null, evtx), onStorageError);
+    browser.storage.sync.get(["privatelist", "invert", "aopSettings"]).then(getSettings.bind(null, evtx), onStorageError);
 }
 
 function onStorageError(error) {
     console.log(`StorageError: ${error}`);
 }
 
-function parseSettings(evtx, item) {
-    settings = {"plst": {}, "invt": false};
+function getSettings(evtx, item) {
+    if (item.aopSettings === undefined) {
+        getSettingsVersion1(evtx, item);
+        return;
+    } else if (item.aopSettings.storageLayoutVersion == 2) {
+        getSettingsVersion2(evtx, item);
+    }
+}
+
+function getSettingsVersion1(evtx, item) {
+    settings = {"plst": {}, "invt": false, "storageLayoutVersion": 2};
     if (item.privatelist) {
         var privatelist = item.privatelist.split(/\r?\n/);
         for (i = 0; i < privatelist.length; i++) {
@@ -74,9 +94,19 @@ function parseSettings(evtx, item) {
             }
         }
     }
+
     if (item.invert) {
         settings["invt"] = item.invert;
     }
+
+    browser.storage.sync.remove(["privatelist"], ["invert"]);
+    browser.storage.sync.set({aopSettings: message.aopSettings}).then(settings = null);
+
+    openURLInPrivateWindow(evtx, settings);
+}
+
+function getSettingsVersion2(evtx, item) {
+    settings = item.aopSettings;
     openURLInPrivateWindow(evtx, settings);
 }
 
@@ -85,8 +115,12 @@ browser.webNavigation.onBeforeNavigate.addListener(
     aopListener
 );
 
-browser.runtime.onMessage.addListener((message) => {
-    if (message.type === 'clearCachedSettings') {
-        settings = null;
+browser.runtime.onMessage.addListener((message, sender, action) => {
+    if (message.type === 'aopSaveSettings') {
+        browser.storage.sync.set({aopSettings: message.aopSettings}).then(settings = null);
+    }
+    if (message.type === 'aopGetSettings') {
+	action(settings);
     }
 });
+
