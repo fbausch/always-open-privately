@@ -2,6 +2,7 @@ function saveOptions(e) {
     e.preventDefault();
     var entries = document.getElementById("entrylist").children;
     var invert = document.querySelector("#invert").checked;
+    var tracking = document.getElementById("trackingparams").value;
     var plst = {};
     for (i = 0; i < entries.length; i++) {
         var domain = entries[i].children[1].value.replace(/^\s+|\s+$/g, '');
@@ -11,7 +12,7 @@ function saveOptions(e) {
 	var mode = entries[i].children[0].value;
         plst[domain] = mode;
     }
-    browser.runtime.sendMessage({type: 'aopSaveSettings', aopSettings: {plst: plst, storageLayoutVersion: 2, invt: invert}});
+    browser.runtime.sendMessage({type: 'aopSaveSettings', aopSettings: {plst: plst, storageLayoutVersion: 2, invt: invert, trck: tracking}});
 }
 
 function appendEntryRow(domain, selectedType) {
@@ -20,7 +21,7 @@ function appendEntryRow(domain, selectedType) {
     var inp = document.createElement('input');
     var del = document.createElement('button');
     typ.setAttribute('class', 'entryTyp');
-    var types = ["disabled", "domain only", "subdomains only", "domain and subdomains"]//, "somewhere in URL"];
+    var types = ["disabled", "domain only", "subdomains only", "domain and subdomains", "somewhere in URL"];
     for (i = 0; i < types.length; i++) {
         var opt = document.createElement('option');
         opt.value = i;
@@ -54,10 +55,11 @@ function delElementClick(e) {
 function showSettings() {
     browser.runtime.sendMessage({type: 'aopGetSettings'}).then((settings) => {
         var keys = Object.keys(settings.plst);
-        for (i in Object.keys(settings.plst)) {
+        for (i in keys) {
             appendEntryRow(keys[i], settings.plst[keys[i]]);
         }
         document.querySelector("#invert").checked = settings.invt;
+        document.getElementById("trackingparams").value = settings.trck;
     });
 }
 

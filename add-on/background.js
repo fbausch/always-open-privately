@@ -12,9 +12,18 @@ function onError(error) {
 }
 
 function loadPrivately(settings, url, tab) {
+    if (settings_inurl == null) {
+        settings_inurl = [];
+        keys = Object.keys(settings.plst);
+        for (i in keys) {
+             if (settings.plst[keys[i]] == 4) {
+                 settings_inurl.push(keys[i]);
+             }
+        }
+    }
+    var aurl = document.createElement('a');
+    aurl.href = url;
     if (!tab.incognito) {
-        var aurl = document.createElement('a');
-        aurl.href = url;
         var domain = aurl.hostname.split('.');
         var i = domain.length - 1;
         var cdom = domain[i];
@@ -33,25 +42,45 @@ function loadPrivately(settings, url, tab) {
             cdom = domain[i] + "." + cdom;
         }
 
+        if (!matches) {
+            for (i in settings_inurl) {
+                var inurl = settings_inurl[i];
+                if (aurl.href.indexOf(inurl) >= 0) {
+                    matches = true;
+                    break;
+                }
+            }
+        }
         if (matches && !settings["invt"] || !matches && settings["invt"]) {
+            if (settings["trck"] != 0) {
+                aurl.search = aurl.search.replace(/(utm_(source|medium|campaign|term|content)|fbclid|gclid|icid|mc_[ce]id|mkt_tok)=[^&#]*/gi, "");
+            }
             browser.tabs.executeScript(tab.tabId, { runAt: "document_start", code: 'window.stop(); '});
-
-            url = url.replace(/(utm_(source|medium|campaign|term|content)|fbclid|gclid|icid|mc_[ce]id|mkt_tok)=[^&#]*/gi, "");
             browser.windows.getAll({windowTypes: ['normal']}).then((wins) => {
                 incognitos = wins.filter(win => win.incognito == true);
                 if (incognitos.length > 0) {
                     selWin = incognitos[0];
-                    browser.tabs.create({active: true, url: url, windowId: selWin.id}).then(browser.windows.update(selWin.id, {focused: true}));
+                    browser.tabs.create({active: true, url: aurl.href, windowId: selWin.id}).then(browser.windows.update(selWin.id, {focused: true}));
                 } else {
                     browser.windows.create({ url, incognito: true });
                 }
 	    });
+            return;
+         }
+     }
+
+     if (settings["trck"] == 1) {
+        trackers_removed = aurl.search.replace(/(utm_(source|medium|campaign|term|content)|fbclid|gclid|icid|mc_[ce]id|mkt_tok)=[^&#]*/gi, "");
+        if (trackers_removed != aurl.search){
+            aurl.search = trackers_removed;
+            browser.tabs.executeScript(tab.tabId, {runAt: "document_start", code: "window.location.href = '" + aurl.href + "';"});
         }
-    }
+     }
 }
 
 function aopListener(evtx) {
     if (settings == null) {
+        settings_inurl = null;
         readSettings(evtx);
     } else {
         openURLInPrivateWindow(evtx, settings);
@@ -67,7 +96,7 @@ function onStorageError(error) {
 }
 
 function getSettings(evtx, item) {
-    if (item.aopSettings === undefined) {
+    if (item.privatelist !== undefined) {
         getSettingsVersion1(evtx, item);
         return;
     } else if (item.aopSettings.storageLayoutVersion == 2) {
@@ -76,7 +105,7 @@ function getSettings(evtx, item) {
 }
 
 function getSettingsVersion1(evtx, item) {
-    settings = {"plst": {}, "invt": false, "storageLayoutVersion": 2};
+    settings = {"plst": {}, "invt": false, "trck": 2, "storageLayoutVersion": 2};
     if (item.privatelist) {
         var privatelist = item.privatelist.split(/\r?\n/);
         for (i = 0; i < privatelist.length; i++) {
@@ -99,18 +128,29 @@ function getSettingsVersion1(evtx, item) {
         settings["invt"] = item.invert;
     }
 
-    browser.storage.sync.remove(["privatelist"], ["invert"]);
-    browser.storage.sync.set({aopSettings: message.aopSettings}).then(settings = null);
+    browser.storage.sync.remove(["privatelist", "invert"]);
+    browser.storage.sync.set({aopSettings: settings});
 
     openURLInPrivateWindow(evtx, settings);
 }
 
 function getSettingsVersion2(evtx, item) {
-    settings = item.aopSettings;
+    if (item.aopSettings === undefined) {
+        settings = initializeSettingsVersion2();
+    } else {
+        settings = item.aopSettings;
+    }
     openURLInPrivateWindow(evtx, settings);
 }
 
+function initializeSettingsVersion2(item) {
+    var settings = {"plst": {}, "invt": false, "trck": 2, "storageLayoutVersion": 2};
+    browser.storage.sync.set({aopSettings: settings});
+    return settings;
+}
+
 settings = null;
+settings_inurl = null;
 browser.webNavigation.onBeforeNavigate.addListener(
     aopListener
 );
