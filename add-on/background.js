@@ -52,9 +52,6 @@ function loadPrivately(settings, url, tab) {
             }
         }
         if (matches && !settings["invt"] || !matches && settings["invt"]) {
-            if (settings["trck"] != 0) {
-                aurl.search = aurl.search.replace(/(utm_(source|medium|campaign|term|content)|fbclid|gclid|icid|mc_[ce]id|mkt_tok)=[^&#]*/gi, "");
-            }
             browser.tabs.executeScript(tab.tabId, { runAt: "document_start", code: 'window.stop(); '});
             browser.windows.getAll({windowTypes: ['normal']}).then((wins) => {
                 incognitos = wins.filter(win => win.incognito == true);
@@ -67,14 +64,6 @@ function loadPrivately(settings, url, tab) {
 	    });
             return;
          }
-     }
-
-     if (settings["trck"] == 1) {
-        trackers_removed = aurl.search.replace(/(utm_(source|medium|campaign|term|content)|fbclid|gclid|icid|mc_[ce]id|mkt_tok)=[^&#]*/gi, "");
-        if (trackers_removed != aurl.search){
-            aurl.search = trackers_removed;
-            browser.tabs.executeScript(tab.tabId, {runAt: "document_start", code: "window.location.href = '" + aurl.href + "';"});
-        }
      }
 }
 

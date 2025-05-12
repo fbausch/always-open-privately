@@ -2,17 +2,17 @@ function saveOptions(e) {
     e.preventDefault();
     var entries = document.getElementById("entrylist").children;
     var invert = document.querySelector("#invert").checked;
-    var tracking = document.getElementById("trackingparams").value;
     var plst = {};
     for (i = 0; i < entries.length; i++) {
-        var domain = entries[i].children[1].value.replace(/^\s+|\s+$/g, '');
+        var domain = entries[i].children[1].value.replace(/^\s+|\s+$/g, '').toLowerCase();
         if (domain.length == 0) {
             continue;
         }
 	var mode = entries[i].children[0].value;
         plst[domain] = mode;
     }
-    browser.runtime.sendMessage({type: 'aopSaveSettings', aopSettings: {plst: plst, storageLayoutVersion: 2, invt: invert, trck: tracking}});
+    browser.runtime.sendMessage({type: 'aopSaveSettings', aopSettings: {plst: plst, storageLayoutVersion: 2, invt: invert}});
+    document.getElementById("savebtn").click();
 }
 
 function appendEntryRow(domain, selectedType) {
@@ -59,7 +59,6 @@ function showSettings() {
             appendEntryRow(keys[i], settings.plst[keys[i]]);
         }
         document.querySelector("#invert").checked = settings.invt;
-        document.getElementById("trackingparams").value = settings.trck;
     });
 }
 

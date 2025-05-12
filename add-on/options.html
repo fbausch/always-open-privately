@@ -33,6 +33,14 @@ button[type=submit] {
   border-radius: 4px;
 }
 
+button[type=submit]:active {
+  background-color: red;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+}
+
 button {
   cursor: pointer;
 }
@@ -48,15 +56,13 @@ button {
   <body>
 
     <form>
-        <button type="button" class="addentry">Add new rule</button>
+        <button type="button" class="addentry">Add new rule</button> (Enter domain without http://, http://, and without any slashes)
         <div id="entrylist"></div>
-        <button type="button" class="addentry">Add new rule</button>
+        <button type="button" class="addentry">Add new rule</button> (Enter domain without http://, http://, and without any slashes)
         <hr />
         <label>Invert (open everything in private window that does not match the list): <input type="checkbox" id="invert" /></label>
-        <br />
-        <label>Remove tracking parameters from URLs: <select id="trackingparams"><option value="0">never</option><option value="1">always</option><option value="2">only if add-on opens a private window</option></select></label>
         <hr />
-        <button type="submit">Save</button>
+        <button type="submit" id="savebtn">Save</button>
     </form>
 
     <script src="options.js"></script>
