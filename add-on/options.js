@@ -25,7 +25,7 @@ function appendEntryRow(domain, selectedType) {
     for (i = 0; i < types.length; i++) {
         var opt = document.createElement('option');
         opt.value = i;
-        opt.innerHTML = types[i];
+        opt.textContent = types[i];
 	if (i == selectedType) {
             opt.selected = "selected";
         }
