@@ -16,7 +16,7 @@
         "page": "options.html"
     },
 
-    "applications": {
+    "browser_specific_settings": {
         "gecko": {
             "id": "openprivately@fbausch.de"
         }
