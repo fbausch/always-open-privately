@@ -8,7 +8,7 @@ function openURLInPrivateWindow(evtx, settings) {
 }
 
 function onError(error) {
-  console.log(`Error: ${error}`);
+    console.log(`Error: ${error}`);
 }
 
 function loadPrivately(settings, url, tab) {
@@ -88,7 +88,8 @@ function getSettings(evtx, item) {
     if (item.privatelist !== undefined) {
         getSettingsVersion1(evtx, item);
         return;
-    } else if (item.aopSettings.storageLayoutVersion == 2) {
+/*    } else if (item.aopSettings.storageLayoutVersion == 2) { */
+    } else {
         getSettingsVersion2(evtx, item);
     }
 }
@@ -149,7 +150,7 @@ browser.runtime.onMessage.addListener((message, sender, action) => {
         browser.storage.sync.set({aopSettings: message.aopSettings}).then(settings = null);
     }
     if (message.type === 'aopGetSettings') {
-	action(settings);
+        action(settings);
     }
 });
 

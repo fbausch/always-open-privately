@@ -1,0 +1,50 @@
+{
+  "extensionName": {
+    "message": "Always Open Privately - Immer im privaten Fenster öffnen",
+    "description": "Name of the extension."
+  },
+  "extensionDescription": {
+    "message": "Öffnet bestimmte Webseiten (konfigurierbare Liste an Seiten) in einem privaten Fenster. Benötigt die Berechtigung, in privaten Fenstern ausgeführt zu werden.",
+    "description": "Description of the extension."
+  },
+  "savePrefsButton": {
+    "message": "Konfiguration speichern",
+    "description": "Save preferences button"
+  },
+  "addNewRule": {
+    "message": "Neue Regel hinzufügen",
+    "description": "Button to add new rule"
+  },
+  "domainHint": {
+    "message": "(Domainnamen ohne http://, https:// und ohne Slashes angeben)",
+    "description": "Hint about domains when entered in the dialog"
+  },
+  "disabled": {
+    "message": "deaktiviert",
+    "description": "Rule is disabled"
+  },
+  "domainOnly": {
+    "message": "nur Domain",
+    "description": "Rule is for domain only"
+  },
+  "subdomainsOnly": {
+    "message": "nur Subdomains",
+    "description": "Rule is for subdomains only"
+  },
+  "domainAndSubdomains": {
+    "message": "Domain and Subdomains",
+    "description": "Rule is for domain and subdomains"
+  },
+  "somewhereInURL": {
+    "message": "irgendwo in der URL",
+    "description": "Rule is for a match somewhere in the domain name"
+  },
+  "deleteRule": {
+    "message": "Regel löschen",
+    "description": "Delete rule button"
+  },
+  "invertRules": {
+    "message": "Invertieren (öffnet alles in einem privaten Fenster, das zu keinem Eintrag der Liste passt):",
+    "description": "Explanation for inverted rules setting"
+  }
+}

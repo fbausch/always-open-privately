@@ -55,14 +55,14 @@ button {
 
   <body>
 
-    <form>
-        <button type="button" class="addentry">Add new rule</button> (Enter domain without http://, http://, and without any slashes)
+    <form id="prefs">
+        <button type="button" class="addentry" data-locale="addNewRule"></button> <span data-locale="domainHint"></span>
         <div id="entrylist"></div>
-        <button type="button" class="addentry">Add new rule</button> (Enter domain without http://, http://, and without any slashes)
+        <button type="button" class="addentry" data-locale="addNewRule"></button> <span data-locale="domainHint"></span>
         <hr />
-        <label>Invert (open everything in private window that does not match the list): <input type="checkbox" id="invert" /></label>
+        <label><span class="locale" data-locale="invertRules"></span> <input type="checkbox" id="invert" /></label>
         <hr />
-        <button type="submit" id="savebtn">Save</button>
+        <button type="submit" id="savebtn" data-locale="savePrefsButton"></button>
     </form>
 
     <script src="options.js"></script>

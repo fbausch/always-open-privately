@@ -1,3 +1,11 @@
+var types = [
+    browser.i18n.getMessage("disabled"),
+    browser.i18n.getMessage("domainOnly"),
+    browser.i18n.getMessage("subdomainsOnly"),
+    browser.i18n.getMessage("domainAndSubdomains"),
+    browser.i18n.getMessage("somewhereInURL")
+];
+
 function saveOptions(e) {
     e.preventDefault();
     var entries = document.getElementById("entrylist").children;
@@ -21,7 +29,6 @@ function appendEntryRow(domain, selectedType) {
     var inp = document.createElement('input');
     var del = document.createElement('button');
     typ.setAttribute('class', 'entryTyp');
-    var types = ["disabled", "domain only", "subdomains only", "domain and subdomains", "somewhere in URL"];
     for (i = 0; i < types.length; i++) {
         var opt = document.createElement('option');
         opt.value = i;
@@ -36,7 +43,7 @@ function appendEntryRow(domain, selectedType) {
     inp.value = domain;
     del.setAttribute('class', 'deleteEntry');
     del.type = "button";
-    del.innerHTML = 'Delete rule';
+    del.textContent = browser.i18n.getMessage("deleteRule");
     del.addEventListener('click', delElementClick);
     ele.appendChild(typ);
     ele.appendChild(inp);
@@ -54,6 +61,9 @@ function delElementClick(e) {
 
 function showSettings() {
     browser.runtime.sendMessage({type: 'aopGetSettings'}).then((settings) => {
+        if (settings === undefined || settings === null) {
+            return;
+        }
         var keys = Object.keys(settings.plst);
         for (i in keys) {
             appendEntryRow(keys[i], settings.plst[keys[i]]);
@@ -62,8 +72,12 @@ function showSettings() {
     });
 }
 
+document.querySelectorAll("[data-locale]").forEach(elem => {
+    elem.textContent = browser.i18n.getMessage(elem.dataset.locale);
+})
+
 document.addEventListener("DOMContentLoaded", showSettings);
-document.querySelector("form").addEventListener("submit", saveOptions);
+document.getElementById("prefs").addEventListener("submit", saveOptions);
 addbuttons = document.getElementsByClassName("addentry");
 for (i = 0; i < addbuttons.length; i++) {
     addbuttons[i].addEventListener("click", addElementClick);

@@ -20,5 +20,5 @@ The add-on requires several permissions. It just asks for the absolutely require
 * `webNavigation`: to get notified about new URLs (new site visits)
 * `tabs`: to get the URL to be opened
 * `activeTab`: to stop loading a website
-* `<all_urls>`: to be able to intercept requests to every possible domain
+* `http://*/*`, `https://*/*`: to be able to intercept requests to every possible domain
 * `storage`: to save add-on settings

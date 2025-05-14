@@ -1,0 +1,50 @@
+{
+  "extensionName": {
+    "message": "Always Open Privately - Sempre Abra Privativamente",
+    "description": "Name of the extension."
+  },
+  "extensionDescription": {
+    "message": "Sempre abre certos sites (lista de sites configurável) em uma janela privativa. Requer a permissão de funcionar em janelas privativas.",
+    "description": "Description of the extension."
+  },
+  "savePrefsButton": {
+    "message": "Salvar preferências",
+    "description": "Save preferences button"
+  },
+  "addNewRule": {
+    "message": "Adicionar nova regra",
+    "description": "Button to add new rule"
+  },
+  "domainHint": {
+    "message": "(Insira o domínio sem http://, https:// e sem barras)",
+    "description": "Hint about domains when entered in the dialog"
+  },
+  "disabled": {
+    "message": "desativada",
+    "description": "Rule is disabled"
+  },
+  "domainOnly": {
+    "message": "somente domínio",
+    "description": "Rule is for domain only"
+  },
+  "subdomainsOnly": {
+    "message": "somente subdomínios",
+    "description": "Rule is for subdomains only"
+  },
+  "domainAndSubdomains": {
+    "message": "domínio e subdomínios",
+    "description": "Rule is for domain and subdomains"
+  },
+  "somewhereInURL": {
+    "message": "em algum lugar no URL",
+    "description": "Rule is for a match somewhere in the domain name"
+  },
+  "deleteRule": {
+    "message": "Excluir regra",
+    "description": "Delete rule button"
+  },
+  "invertRules": {
+    "message": "Inverter (abre todos os sites em uma janela privativa que não correspondem à nenhuma regra da lista):",
+    "description": "Explanation for inverted rules setting"
+  }
+}

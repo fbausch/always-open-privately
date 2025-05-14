@@ -1,0 +1,50 @@
+{
+  "extensionName": {
+    "message": "Always Open Privately",
+    "description": "Name of the extension."
+  },
+  "extensionDescription": {
+    "message": "Always opens certain websites (configurable list of websites) in a private window. Needs the permission to run in private windows.",
+    "description": "Description of the extension."
+  },
+  "savePrefsButton": {
+    "message": "Save preferences",
+    "description": "Save preferences button"
+  },
+  "addNewRule": {
+    "message": "Add new rule",
+    "description": "Button to add new rule"
+  },
+  "domainHint": {
+    "message": "(Enter domain without http://, https://, and without any slashes)",
+    "description": "Hint about domains when entered in the dialog"
+  },
+  "disabled": {
+    "message": "disabled",
+    "description": "Rule is disabled"
+  },
+  "domainOnly": {
+    "message": "domain only",
+    "description": "Rule is for domain only"
+  },
+  "subdomainsOnly": {
+    "message": "subdomains only",
+    "description": "Rule is for subdomains only"
+  },
+  "domainAndSubdomains": {
+    "message": "domain and subdomains",
+    "description": "Rule is for domain and subdomains"
+  },
+  "somewhereInURL": {
+    "message": "somewhere in URL",
+    "description": "Rule is for a match somewhere in the domain name"
+  },
+  "deleteRule": {
+    "message": "Delete rule",
+    "description": "Delete rule button"
+  },
+  "invertRules": {
+    "message": "Invert (open everything in private window that does not match the list):",
+    "description": "Explanation for inverted rules setting"
+  }
+}
