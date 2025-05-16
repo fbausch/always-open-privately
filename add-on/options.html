@@ -50,10 +50,23 @@ button {
   border-radius: 4px;
 }
 
+#warning {
+  border: 2px solid red;
+  border-radius: 4px;
+  padding: 5px;
+  margin: 5px;
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
     </style>
   </head>
 
   <body>
+
+    <div id="warning">
+        <p data-locale="warningNoPrivateWindowPermission"></p>
+    </div>
 
     <form id="prefs">
         <button type="button" class="addentry" data-locale="addNewRule"></button> <span data-locale="domainHint"></span>

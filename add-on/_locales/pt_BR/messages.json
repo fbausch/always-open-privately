@@ -46,5 +46,9 @@
   "invertRules": {
     "message": "Inverter (abre todos os sites em uma janela privativa que não correspondem à nenhuma regra da lista):",
     "description": "Explanation for inverted rules setting"
+  },
+  "warningNoPrivateWindowPermission": {
+    "message": "Esta extensão não tem permissão para ser executada em janelas privativas. Portanto, ela não funcionará corretamente. Por favor, conceda a permissão de janela privativa na aba Detalhes.",
+    "description": "Add-on was not granted the permission to run in private windows."
   }
 }

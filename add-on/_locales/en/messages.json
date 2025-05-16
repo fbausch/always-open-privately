@@ -46,5 +46,9 @@
   "invertRules": {
     "message": "Invert (open everything in private window that does not match the list):",
     "description": "Explanation for inverted rules setting"
+  },
+  "warningNoPrivateWindowPermission": {
+    "message": "The extension is missing the permission to run in private windows. Therefore, it will not work properly. Please grant the private window permission under the Details tab.",
+    "description": "Add-on was not granted the permission to run in private windows."
   }
 }

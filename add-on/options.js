@@ -72,6 +72,12 @@ function showSettings() {
     });
 }
 
+browser.extension.isAllowedIncognitoAccess().then((value) => {
+    if (value === true) {
+        document.getElementById("warning").style.display = 'none';
+    }
+}, (error) => { console.log(error); });
+
 document.querySelectorAll("[data-locale]").forEach(elem => {
     elem.textContent = browser.i18n.getMessage(elem.dataset.locale);
 })

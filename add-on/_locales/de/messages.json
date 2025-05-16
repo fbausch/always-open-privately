@@ -46,5 +46,9 @@
   "invertRules": {
     "message": "Invertieren (öffnet alles in einem privaten Fenster, das zu keinem Eintrag der Liste passt):",
     "description": "Explanation for inverted rules setting"
+  },
+  "warningNoPrivateWindowPermission": {
+    "message": "Dieser Erweiterung fehlt die Berechtigung, in privaten Fenstern ausgeführt zu werden. Daher wird die Erweiterung nicht korrekt funktionieren. Bitte im Details-Reiter aktivieren.",
+    "description": "Add-on was not granted the permission to run in private windows."
   }
 }
