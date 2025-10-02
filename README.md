@@ -5,8 +5,6 @@ This Firefox add-on provides the functionality to configure a whitelist of domai
 
 Because of how webextension add-ons work, it is not always possible to prevent Firefox from loading a website. However, this add-on will always open a new private window and load the website there.
 
-When opening the new private window, utm_campaign parameters are stripped from the URL to add a little more privacy.
-
 ## Usage
 
 Always Open Privately needs the permission to run in private windows. This setting may be set manually in the add-on manager in Firefox.
