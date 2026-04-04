@@ -1,3 +1,7 @@
+# IMPORTANT NOTE
+
+The active development of this add-on changed to Codeberg (https://codeberg.org/fbausch/always-open-privately).
+
 # Always Open Privately
 Firefox add-on to always open specific websites in private windows.
 
